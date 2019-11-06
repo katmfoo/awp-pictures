@@ -5,5 +5,4 @@ Picture website project for advanced web programming class
 1. `git clone https://github.com/pricheal/awp-pictures.git`
 2. `cd awp-pictures/api/`
 3. `composer install`
-4. `cd ../../`
-5. `chmod 755 -R awp-pictures`
+4. `chmod 755 -R ../../awp-pictures`
