@@ -17,12 +17,8 @@ class EmailController extends Controller
             app('db')->table('emails')
                 ->where('verification_code', $verification_code)
                 ->update(['verified' => 1]);
-            
-            return "Email '$email' has been verified successfully";
-        } else {
-            return "Verification code not found";
         }
 
-        // return view('email_verify', ['email' => $email]);
+        return view('email_verify', ['email' => $email]);
     }
 }
