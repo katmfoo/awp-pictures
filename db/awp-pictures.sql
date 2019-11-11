@@ -1,3 +1,7 @@
+drop table if exists emails;
+drop table if exists users;
+drop table if exists api_tokens;
+
 create table emails
 (
 	id int auto_increment
