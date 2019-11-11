@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Cookie;
 use Helpers;
+use Illuminate\Database\QueryException;
 
 class UserController extends Controller
 {
@@ -19,12 +21,33 @@ class UserController extends Controller
             'email' => 'required|string|email|min:3|max:256'
         ]);
 
-        // Insert user into users table
-        $user_id = app('db')->table('users')->insertGetId([
-            'username' => $request->input('username'),
-            'password_hash' => password_hash($request->input('password'), PASSWORD_DEFAULT),
-            'email' => $request->input('email')
-        ]);
+        app('db')->beginTransaction();
+
+        try {
+            $email_verification_code = Helpers::generateRandomString(32);
+            $email = $request->input('email');
+
+            // Insert email for user
+            $email_id = app('db')->table('emails')->insertGetId([
+                'email' => $email,
+                'verification_code' => $email_verification_code
+            ]);
+
+            // Insert user into users table
+            $user_id = app('db')->table('users')->insertGetId([
+                'username' => $request->input('username'),
+                'password_hash' => password_hash($request->input('password'), PASSWORD_DEFAULT),
+                'email_id' => $email_id
+            ]);
+
+            // Send verification email
+            mail($email, 'Verify email address', "Click the below link to verify your email address for Patrick Richeal's advanced web programming picture project.\n".env('APP_URL').'/emails/verify/'.$email_verification_code);
+
+            app('db')->commit();
+        } catch (QueryException $e) {
+            app('db')->rollBack();
+            return response()->json(['error' => 'Internal server error'], 500);
+        }
 
         if ($user_id) {
             // Add user id to response
@@ -76,6 +99,9 @@ class UserController extends Controller
 
     /**
      * Generates a new api token for the given user
+     * 
+     * @param string $user_id The user to generate the api token for
+     * @return string The generated api token
      */
     private function generateApiToken($user_id) {
         // Create a unique token that has never been used
