@@ -41,7 +41,7 @@ class UserController extends Controller
             ]);
 
             // Send verification email
-            mail($email, 'Verify email address', "Click the below link to verify your email address for Patrick Richeal's advanced web programming picture project.\n".env('APP_URL').'/emails/verify/'.$email_verification_code);
+            mail($email, 'Verify email address', "Click the below link to verify your email address for Patrick Richeal's advanced web programming picture project.\n\n".env('APP_URL').'/emails/verify/'.$email_verification_code);
 
             app('db')->commit();
         } catch (QueryException $e) {

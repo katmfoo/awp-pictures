@@ -9,6 +9,7 @@ class EmailController extends Controller
      */
     public function verify($verification_code)
     {
+        return 'cheeseitz';
         // Check what email this verification code is for (if any)
         $email = app('db')->table('emails')->where('verification_code', $verification_code)->value('email');
         
