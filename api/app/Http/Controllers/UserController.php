@@ -41,7 +41,7 @@ class UserController extends Controller
             ]);
 
             // Send verification email
-            mail($email, 'Verify email address', "Click the below link to verify your email address for Patrick Richeal's advanced web programming picture project.\n\n".env('APP_URL').'/emails/verify/'.$email_verification_code);
+            mail($email, 'Verify email address', "Use the following code to verify your email address: ".$email_verification_code);
 
             app('db')->commit();
         } catch (QueryException $e) {
@@ -112,11 +112,116 @@ class UserController extends Controller
         }
 
         // Add token to api_tokens table for given user
-        $user_id = app('db')->table('api_tokens')->insert([
+        app('db')->table('api_tokens')->insert([
             'token' => $api_token,
             'user_id' => $user_id
         ]);
 
         return $api_token;
+    }
+
+    /**
+     * Update a user's password
+     */
+    public function updatePassword(Request $request)
+    {
+        $this->validate($request, [
+            'password' => 'required|string|min:8|max:256',
+            'current_password' => 'required_without:forgot_password_code|string',
+            'user_id' => 'required_with:current_password|string',
+            'forgot_password_code' => 'required_without:current_password|string|size:32'
+        ]);
+
+        // If current password is set, make sure it is the right password for the given user id
+        if ($request->has('current_password')) {
+            $password_hash = app('db')->table('users')
+                ->select('password_hash')
+                ->where('id', $request->input('user_id'))
+                ->value('password_hash');
+            
+            // Ensure current password is correct
+            if (!password_verify($request->input('current_password'), $password_hash)) {
+                return response()->json(['error' => 'Current password is incorrect'], 400);
+            }
+        } else {
+            // If the current password isn't set, that means forgot password code is, see
+            // if we can find what user the code is for
+            $user_id = app('db')->table('forgot_password_codes')
+                ->where('code', $request->input('forgot_password_code'))
+                ->where('used', 0)
+                ->value('user_id');
+            
+            if ($user_id) {
+                // Forgot pass code is valid, mark it as used
+                app('db')->table('forgot_password_codes')
+                    ->where('code', $request->input('forgot_password_code'))
+                    ->where('used', 0)
+                    ->where('user_id', $user_id)
+                    ->update(['used' => 1]);
+            } else {
+                return response()->json(['error' => 'Forgot password code not found'], 400);
+            }
+        }
+
+        // Change password
+        app('db')->table('users')
+            ->where('id', $request->input('user_id') ?? $user_id)
+            ->update(['password_hash' => password_hash($request->input('password'), PASSWORD_DEFAULT)]);
+
+        return response()->json((object)[]);
+    }
+
+    /**
+     * Create a forgot password request, sends an email to the supplied email with instructions
+     * to reset password
+     */
+    public function forgotPassword(Request $request) {
+        $this->validate($request, [
+            'username' => 'required|string',
+            'email' => 'required|string'
+        ]);
+
+        // Look for user with supplied username and email
+        $user = app('db')->table('users')
+            ->join('emails', 'users.email_id', '=', 'emails.id')
+            ->select('users.id', 'emails.email')
+            ->where('users.username', $request->input('username'))
+            ->where('emails.email', $request->input('email'))
+            ->first();
+
+        if ($user) {
+            // Generate unique forgot password code for this user
+            $forgot_password_code = $this->generateForgotPasswordCode($user->id);
+
+            // Send forgot password email
+            mail($user->email, 'Forgot password', "Use the following code to reset your password: ".$forgot_password_code);
+
+            return response()->json((object)[]);
+        }
+        
+        return response()->json(['error' => 'Could not find that user'], 400);
+    }
+
+    /**
+     * Generates a new forgot password code for the given user
+     * 
+     * @param string $user_id The user to generate the forgot password code for
+     * @return string The generated forgot password code
+     */
+    private function generateForgotPasswordCode($user_id) {
+        // Create a unique forgot password code that has never been used
+        $already_exists = true;
+        while ($already_exists) {
+            $forgot_password_code = Helpers::generateRandomString(32);
+            $already_exists = app('db')->table('forgot_password_codes')->where('code', $forgot_password_code)->exists();
+        }
+
+        // Add forgot password code to forgot_password_codes table for given user
+        app('db')->table('forgot_password_codes')->insert([
+            'code' => $forgot_password_code,
+            'user_id' => $user_id
+        ]);
+
+        return $forgot_password_code;
     }
 }
