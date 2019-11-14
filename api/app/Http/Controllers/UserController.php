@@ -24,24 +24,18 @@ class UserController extends Controller
         app('db')->beginTransaction();
 
         try {
-            $email_verification_code = Helpers::generateRandomString(32);
-            $email = $request->input('email');
-
-            // Insert email for user
-            $email_id = app('db')->table('emails')->insertGetId([
-                'email' => $email,
-                'verification_code' => $email_verification_code
-            ]);
+            $email_verification_code = $this->getUniqueUserEmailVerificationCode();
 
             // Insert user into users table
             $user_id = app('db')->table('users')->insertGetId([
                 'username' => $request->input('username'),
                 'password_hash' => password_hash($request->input('password'), PASSWORD_DEFAULT),
-                'email_id' => $email_id
+                'email' => $request->input('email'),
+                'email_verification_code' => $email_verification_code
             ]);
 
             // Send verification email
-            mail($email, 'Verify email address', "Use the following code to verify your email address: ".$email_verification_code);
+            mail($request->input('email'), 'Verify email address', "Use the following code to verify your email address: ".$email_verification_code);
 
             app('db')->commit();
         } catch (QueryException $e) {
@@ -61,6 +55,22 @@ class UserController extends Controller
         } else {
             return response()->json(['error' => 'Internal server error'], 500);
         }
+    }
+
+    /**
+     * Returns a unique user email verification code
+     * 
+     * @return string The unique verification code
+     */
+    private function getUniqueUserEmailVerificationCode(): string {
+        // Create a unique code that has never been used
+        $already_exists = true;
+        while ($already_exists) {
+            $verification_code = Helpers::generateRandomString(32);
+            $already_exists = app('db')->table('users')->where('email_verification_code', $verification_code)->exists();
+        }
+
+        return $verification_code;
     }
 
     /**
@@ -103,7 +113,7 @@ class UserController extends Controller
      * @param string $user_id The user to generate the api token for
      * @return string The generated api token
      */
-    private function generateApiToken($user_id) {
+    private function generateApiToken($user_id): string {
         // Create a unique token that has never been used
         $already_exists = true;
         while ($already_exists) {
@@ -183,10 +193,9 @@ class UserController extends Controller
 
         // Look for user with supplied username and email
         $user = app('db')->table('users')
-            ->join('emails', 'users.email_id', '=', 'emails.id')
-            ->select('users.id', 'emails.email')
-            ->where('users.username', $request->input('username'))
-            ->where('emails.email', $request->input('email'))
+            ->select('id', 'email')
+            ->where('username', $request->input('username'))
+            ->where('email', $request->input('email'))
             ->first();
 
         if ($user) {
@@ -208,7 +217,7 @@ class UserController extends Controller
      * @param string $user_id The user to generate the forgot password code for
      * @return string The generated forgot password code
      */
-    private function generateForgotPasswordCode($user_id) {
+    private function generateForgotPasswordCode($user_id): string {
         // Create a unique forgot password code that has never been used
         $already_exists = true;
         while ($already_exists) {

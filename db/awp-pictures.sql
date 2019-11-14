@@ -1,17 +1,6 @@
-drop table if exists emails;
 drop table if exists users;
 drop table if exists api_tokens;
 drop table if exists forgot_password_codes;
-
-create table emails
-(
-	id int auto_increment
-		primary key,
-	email varchar(256) not null,
-	verified tinyint(1) default 0 not null,
-	verification_code varchar(32) not null,
-	created_at datetime default CURRENT_TIMESTAMP not null
-);
 
 create table users
 (
@@ -19,13 +8,12 @@ create table users
 		primary key,
 	username varchar(32) not null,
 	password_hash varchar(256) not null,
-	email_id int not null,
+	email varchar(256) not null,
+	email_verified tinyint(1) default 0 not null,
+	email_verification_code varchar(32) not null,
 	created_at datetime default CURRENT_TIMESTAMP not null,
 	constraint users_username_uindex
-		unique (username),
-	constraint users_emails_id_fk
-		foreign key (email_id) references emails (id)
-			on update cascade on delete cascade
+		unique (username)
 );
 
 create table api_tokens
@@ -56,3 +44,4 @@ create table forgot_password_codes
 		foreign key (user_id) references users (id)
 			on update cascade on delete cascade
 );
+
