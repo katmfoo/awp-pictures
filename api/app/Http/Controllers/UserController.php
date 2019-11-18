@@ -48,7 +48,7 @@ class UserController extends Controller
     }
 
     /**
-     * Returns a unique user email verification code
+     * Returns an unused user email verification code
      * 
      * @return string The unique verification code
      */
