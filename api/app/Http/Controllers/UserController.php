@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Cookie;
 use Helpers;
-use Illuminate\Database\QueryException;
 
 class UserController extends Controller
 {
@@ -21,27 +20,18 @@ class UserController extends Controller
             'email' => 'required|string|email|min:3|max:256'
         ]);
 
-        app('db')->beginTransaction();
+        $email_verification_code = $this->getUniqueUserEmailVerificationCode();
 
-        try {
-            $email_verification_code = $this->getUniqueUserEmailVerificationCode();
+        // Insert user into users table
+        $user_id = app('db')->table('users')->insertGetId([
+            'username' => $request->input('username'),
+            'password_hash' => password_hash($request->input('password'), PASSWORD_DEFAULT),
+            'email' => $request->input('email'),
+            'email_verification_code' => $email_verification_code
+        ]);
 
-            // Insert user into users table
-            $user_id = app('db')->table('users')->insertGetId([
-                'username' => $request->input('username'),
-                'password_hash' => password_hash($request->input('password'), PASSWORD_DEFAULT),
-                'email' => $request->input('email'),
-                'email_verification_code' => $email_verification_code
-            ]);
-
-            // Send verification email
-            mail($request->input('email'), 'Verify email address', "Use the following code to verify your email address: ".$email_verification_code);
-
-            app('db')->commit();
-        } catch (QueryException $e) {
-            app('db')->rollBack();
-            return response()->json(['error' => 'Internal server error'], 500);
-        }
+        // Send verification email
+        mail($request->input('email'), 'Verify email address', "Use the following code to verify your email address: ".$email_verification_code);
 
         if ($user_id) {
             // Add user id to response
