@@ -101,7 +101,7 @@ class PictureController extends Controller
         
         foreach ($data['data'] as &$item) {
             $item->user_id = (string) $item->user_id;
-            $item->url = env('APP_URL').Storage::url($item->file_name.'.'.$item->file_type);
+            $item->url = env('APP_URL').'/public'.Storage::url($item->file_name.'.'.$item->file_type);
             unset($item->file_name);
             unset($item->file_type);
         }
