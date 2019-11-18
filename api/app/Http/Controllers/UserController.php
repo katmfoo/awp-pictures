@@ -74,6 +74,30 @@ class UserController extends Controller
     }
 
     /**
+     * Verify a user email
+     */
+    public function verifyEmail(Request $request)
+    {
+        $this->validate($request, [
+            'verification_code' => 'required|string|size:32'
+        ]);
+
+        // Check what user this verification code is for (if any)
+        $verification_code_exists = app('db')->table('users')->where('email_verification_code', $request->input('verification_code'))->exists();
+        
+        // If verification code is valid, mark email as verified
+        if ($verification_code_exists) {
+            app('db')->table('users')
+                ->where('email_verification_code', $request->input('verification_code'))
+                ->update(['email_verified' => 1]);
+            
+            return response()->json((object)[]);
+        }
+
+        return response()->json(['error' => 'Verification code not found'], 400);
+    }
+
+    /**
      * Validate a username and password, returns a user_id via json response and an
      * api token via cookies
      */
