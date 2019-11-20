@@ -149,7 +149,20 @@ class PictureController extends Controller
      * Make a comment on a picture
      */
     public function comment(Request $request, $pretty_id) {
-        dump($pretty_id);
+        $this->validate($request, [
+            'comment' => 'required|string|max:256',
+            'comment_id' => 'integer'
+        ]);
+
+        // Get picture_id of picture with given pretty_id
+
+        // Insert comment into comments table
+        $insert_data = [
+            'comment' => $request->input('comment'),
+            'picture_id' => $picture_id,
+            'file_type' => $file_type,
+            'user_id' => $request->user()
+        ];
     }
 
     /*

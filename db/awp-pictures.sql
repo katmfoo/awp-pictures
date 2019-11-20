@@ -1,9 +1,20 @@
+
+/* 
+ * file - db/awp-pictures.sql
+ * author - Patrick Richeal
+ *
+ * Script to setup database structure for awp picture project
+ */
+
 drop table if exists users;
 drop table if exists api_tokens;
 drop table if exists forgot_password_codes;
 drop table if exists pictures;
 
--- table to store users
+
+/*
+ * Table to store user info like username, password hash, email data, etc.
+ */
 create table users
 (
 	id int auto_increment
@@ -18,8 +29,10 @@ create table users
 		unique (username)
 );
 
--- table to store api tokens, grants users access to api
--- and identifies all of their requests
+/*
+ * Table to store api tokens generated for users by the api, to grant
+ * access to the api
+ */
 create table api_tokens
 (
 	id int auto_increment
@@ -34,8 +47,10 @@ create table api_tokens
 			on update cascade on delete cascade
 );
 
--- table to store forgot password codes that we have generated
--- and sent to user's email
+/*
+ * Table to store forgot password codes that we have generated and
+ * sent to user's email
+ */
 create table forgot_password_codes
 (
 	id int auto_increment
@@ -51,7 +66,12 @@ create table forgot_password_codes
 			on update cascade on delete cascade
 );
 
--- table to store info on pictures uploaded by users
+/*
+ * Table to store info on pictures uploaded by users, has a normal
+ * id used internally (for foriegn keys, joins, etc.) and a 'pretty id'
+ * (also unique) that is just six random lowercase letters/numbers used
+ * by the client (for pretty urls, etc.)
+ */
 create table pictures
 (
 	id int auto_increment
@@ -76,8 +96,11 @@ create table pictures
 create index pictures_pretty_id_index
 	on pictures (pretty_id);
 
--- table to store comments made by users on pictures, potentially
--- in response to another comment
+/*
+ * Table to store comments made by users on pictures, root level comments
+ * on a picture will have a null comment_id while comments in response to
+ * another comment will have a non null comment_id
+ */
 create table comments
 (
 	id int auto_increment
