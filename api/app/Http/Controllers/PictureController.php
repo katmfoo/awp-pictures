@@ -17,6 +17,7 @@ class PictureController extends Controller
             'caption' => 'string|max:256'
         ]);
 
+        // Get file type of the picture file
         $file_type = $request->file('picture')->getClientOriginalExtension();
 
         // Make sure file type is one that we support
@@ -88,19 +89,34 @@ class PictureController extends Controller
     {
         $this->validate($request, [
             'page' => 'integer',
-            'per_page' => 'integer|max:30'
+            'per_page' => 'integer|max:30',
+            'username' => 'string'
         ]);
 
+        // Set page size to whatever they sent in or a default of 15
         $page_size = $request->input('page_size') ?? 15;
 
+        // Query database for pictures
         $data = app('db')->table('pictures')
-            ->select('pretty_id as picture_id', 'file_name', 'file_type', 'caption', 'user_id', 'created_at')
-            ->orderBy('created_at', 'desc')
-            ->paginate($page_size)
-            ->toArray();
+            ->join('users', 'users.id', 'pictures.user_id')
+            ->select('pretty_id as picture_id', 'file_name', 'file_type', 'caption', 'username', 'pictures.created_at')
+            ->orderBy('created_at', 'desc');
+
+        // If pretty_id isn't null, add where clause
+        if ($pretty_id != null) {
+            $data->where('pretty_id', $pretty_id);
+        }
         
+        // If they sent a username, add where clause
+        if ($request->has('username')) {
+            $data->where('username', $request->input('username'));
+        }
+        
+        // Retrieve results
+        $data = $data->paginate($page_size)->toArray();
+        
+        // Format each item individually
         foreach ($data['data'] as &$item) {
-            $item->user_id = (string) $item->user_id;
             $item->url = env('APP_URL').'/public'.Storage::url($item->file_name.'.'.$item->file_type);
             unset($item->file_name);
             unset($item->file_type);
