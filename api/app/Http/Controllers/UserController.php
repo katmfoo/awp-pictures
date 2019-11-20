@@ -5,6 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Cookie;
 use Helpers;
+use Laravel\Lumen\Routing\Controller;
+
+/*
+ * file - api/app/Http/Controllers/UserController.php
+ * author - Patrick Richeal
+ * 
+ * User controller file, has all the functions to do the various
+ * actions related to a user
+ */
 
 class UserController extends Controller
 {

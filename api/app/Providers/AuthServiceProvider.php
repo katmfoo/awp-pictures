@@ -1,35 +1,26 @@
 <?php
 
 namespace App\Providers;
-
-use App\User;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+
+/*
+ * file - api/app/Providers/AuthServiceProvider.php
+ * author - Patrick Richeal
+ * 
+ * Auth service provider file, service is used by the auth middleware (defined in
+ * api/app/Http/Middleware/Authenticate.php) to determine if the user making the
+ * request has sent up a proper cookie
+ */
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        //
-    }
-
-    /**
-     * Boot the authentication services for the application.
-     *
-     * @return void
+    /*
+     * This function looks for a cookie called api_token that should be set if the user
+     * has registered/logged in successfully and retrieves the user that the api token
+     * belongs to
      */
     public function boot()
     {
-        // Here you may define how you wish users to be authenticated for your Lumen
-        // application. The callback which receives the incoming request instance
-        // should return either a User instance or null. You're free to obtain
-        // the User instance via an API token or any other method necessary.
-
         $this->app['auth']->viaRequest('api', function ($request) {
             // Look for api_token cookie
             $api_token = $request->cookie('api_token');

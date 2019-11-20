@@ -4,6 +4,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Helpers;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Lumen\Routing\Controller;
+
+/*
+ * file - api/app/Http/Controllers/PictureController.php
+ * author - Patrick Richeal
+ * 
+ * Picture controller file, has all the functions to do the various
+ * actions related to a picture
+ */
 
 class PictureController extends Controller
 {
@@ -122,13 +131,32 @@ class PictureController extends Controller
             unset($item->file_type);
         }
 
-        return response()->json([
-            'pictures' => $data['data'],
-            'pagination' => [
-                'current_page' => $data['current_page'],
-                'last_page' => $data['last_page'],
-                'per_page' => $data['per_page']
-            ]
-        ]);
+        if ($pretty_id == null) {
+            return response()->json([
+                'pictures' => $data['data'],
+                'pagination' => [
+                    'current_page' => $data['current_page'],
+                    'last_page' => $data['last_page'],
+                    'per_page' => $data['per_page']
+                ]
+            ]);
+        } else {
+            return response()->json(['picture' => $data['data']]);
+        }
+    }
+
+    /*
+     * Make a comment on a picture
+     */
+    public function comment(Request $request, $pretty_id) {
+        dump($pretty_id);
+    }
+
+    /*
+     * Delete a comment from a picture
+     */
+    public function deleteComment(Request $request, $pretty_id, $comment_id) {
+        dump($pretty_id);
+        dump($comment_id);
     }
 }

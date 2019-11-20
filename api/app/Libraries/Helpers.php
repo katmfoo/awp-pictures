@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * file - api/app/Libraries/Helpers.php
+ * author - Patrick Richeal
+ * 
+ * Helper class I created that just has random functions that are useful in
+ * multiple places
+ */
+
 class Helpers
 {
     /**
