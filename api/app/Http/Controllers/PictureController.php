@@ -155,21 +155,52 @@ class PictureController extends Controller
         ]);
 
         // Get picture_id of picture with given pretty_id
+        $picture_id = app('db')->table('pictures')
+            ->where('pretty_id', $pretty_id)
+            ->value('id');
 
         // Insert comment into comments table
         $insert_data = [
             'comment' => $request->input('comment'),
             'picture_id' => $picture_id,
-            'file_type' => $file_type,
             'user_id' => $request->user()
         ];
+
+        if ($request->has('comment_id')) {
+            $insert_data['comment_id'] = $request->input('comment_id');
+        }
+
+        $comment_id = app('db')->table('comments')->insertGetId($insert_data);
+
+        // Add comment id to response
+        return response()->json(['comment_id' => (string) $comment_id]);
     }
 
     /*
      * Delete a comment from a picture
      */
     public function deleteComment(Request $request, $pretty_id, $comment_id) {
-        dump($pretty_id);
-        dump($comment_id);
+        // Ensure user is allowed to delete the comment they are trying to
+        // delete (must be user who posted picture or comment)
+        $allowed_to_delete = app('db')->table('pictures')
+            ->join('comments', 'pictures.id', 'comments.picture_id')
+            ->where('pretty_id', $pretty_id)
+            ->where('comments.id', $comment_id)
+            ->where(function ($query) use ($request) {
+                $query->where('pictures.user_id', $request->user())
+                      ->orWhere('comments.user_id', $request->user());
+            })
+            ->exists();
+        
+        if (!$allowed_to_delete) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Delete comment by setting it to null
+        app('db')->table('comments')
+            ->where('id', $comment_id)
+            ->update(['comment' => null]);
+        
+        return response()->json((object)[]);
     }
 }

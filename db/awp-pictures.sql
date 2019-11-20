@@ -105,7 +105,7 @@ create table comments
 (
 	id int auto_increment
 		primary key,
-	comment varchar(256) null comment 'Null if comment was deleted',
+	comment varchar(256) null comment 'Null if comment deleted',
 	picture_id int not null,
 	user_id int null comment 'Null if user deleted',
 	comment_id int null comment 'Null if root level comment',
