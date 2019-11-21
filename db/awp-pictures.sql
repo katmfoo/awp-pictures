@@ -97,9 +97,7 @@ create index pictures_pretty_id_index
 	on pictures (pretty_id);
 
 /*
- * Table to store comments made by users on pictures, root level comments
- * on a picture will have a null comment_id while comments in response to
- * another comment will have a non null comment_id
+ * Table to store comments made by users on pictures
  */
 create table comments
 (
@@ -108,10 +106,7 @@ create table comments
 	comment varchar(256) null comment 'Null if comment deleted',
 	picture_id int not null,
 	user_id int null comment 'Null if user deleted',
-	comment_id int null comment 'Null if root level comment',
 	created_at datetime default CURRENT_TIMESTAMP not null,
-	constraint comments_comments_id_fk
-		foreign key (comment_id) references comments (id),
 	constraint comments_pictures_id_fk
 		foreign key (picture_id) references pictures (id)
 			on update cascade on delete cascade,

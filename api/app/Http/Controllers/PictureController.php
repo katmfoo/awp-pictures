@@ -108,7 +108,7 @@ class PictureController extends Controller
         // Query database for pictures
         $data = app('db')->table('pictures')
             ->join('users', 'users.id', 'pictures.user_id')
-            ->select('pretty_id as picture_id', 'file_name', 'file_type', 'caption', 'username', 'pictures.created_at')
+            ->select('pictures.id', 'pretty_id as picture_id', 'file_name', 'file_type', 'caption', 'username', 'pictures.created_at')
             ->orderBy('created_at', 'desc');
 
         // If pretty_id isn't null, add where clause
@@ -124,11 +124,29 @@ class PictureController extends Controller
         // Retrieve results
         $data = $data->paginate($page_size)->toArray();
         
-        // Format each item individually
+        // Do some stuff for each picture we are returning
         foreach ($data['data'] as &$item) {
+            // Put url of picture together
             $item->url = env('APP_URL').'/public'.Storage::url($item->file_name.'.'.$item->file_type);
+            
+            // Get the comments for this picture
+            $comments = app('db')->table('comments')
+                ->join('users', 'comments.user_id', 'users.id')
+                ->select('comments.id as comment_id', 'comment', 'username', 'comments.created_at')
+                ->where('picture_id', $item->id)
+                ->orderBy('created_at', 'asc')
+                ->get();
+            $item->comments = $comments->toArray();
+
+            // Do some stuff for each comment
+            foreach ($item->comments as &$comment) {
+                $comment->comment_id = (string) $comment->comment_id;
+            }
+
+            // Unset some stuff we don't want to return
             unset($item->file_name);
             unset($item->file_type);
+            unset($item->id);
         }
 
         if ($pretty_id == null) {
@@ -151,7 +169,6 @@ class PictureController extends Controller
     public function comment(Request $request, $pretty_id) {
         $this->validate($request, [
             'comment' => 'required|string|max:256',
-            'comment_id' => 'integer'
         ]);
 
         // Get picture_id of picture with given pretty_id
@@ -159,18 +176,12 @@ class PictureController extends Controller
             ->where('pretty_id', $pretty_id)
             ->value('id');
 
-        // Insert comment into comments table
-        $insert_data = [
-            'comment' => $request->input('comment'),
-            'picture_id' => $picture_id,
-            'user_id' => $request->user()
-        ];
-
-        if ($request->has('comment_id')) {
-            $insert_data['comment_id'] = $request->input('comment_id');
-        }
-
-        $comment_id = app('db')->table('comments')->insertGetId($insert_data);
+        $comment_id = app('db')->table('comments')
+            ->insertGetId([
+                'comment' => $request->input('comment'),
+                'picture_id' => $picture_id,
+                'user_id' => $request->user()
+            ]);
 
         // Add comment id to response
         return response()->json(['comment_id' => (string) $comment_id]);
