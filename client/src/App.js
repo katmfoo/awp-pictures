@@ -12,7 +12,7 @@ import {
 
 export default function App() {
   return (
-    <Router basename="/~richealp7/awp/awp-pictures/client/public">
+    <Router basename="/~richealp7/awp/awp-pictures/client/build">
       <div>
         <nav>
           <ul>
