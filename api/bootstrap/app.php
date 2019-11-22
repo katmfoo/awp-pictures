@@ -16,6 +16,9 @@ $app = new Laravel\Lumen\Application(dirname(__DIR__));
 $app->withFacades();
 $app->withEloquent();
 
+// Register cors middleware to response properly to cors options requests
+$app->middleware([App\Http\Middleware\Cors::class]);
+
 // Register auth middleware that we can attach to routes (defined in
 // api/app/Http/Middleware/Authenticate.php)
 $app->routeMiddleware(['auth' => App\Http\Middleware\Authenticate::class]);
