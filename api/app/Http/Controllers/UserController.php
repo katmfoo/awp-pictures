@@ -17,6 +17,21 @@ use Laravel\Lumen\Routing\Controller;
 
 class UserController extends Controller
 {
+    /*
+     * Checks to see if the given username is taken
+     */
+    public function usernameTaken(Request $request)
+    {
+        $this->validate($request, [
+            'username' => 'required|string'
+        ]);
+
+        // Check to see if username is already taken
+        $username_taken = app('db')->table('users')->where('username', $request->input('username'))->exists();
+
+        return response()->json(['taken' => $username_taken]);
+    }
+
     /**
      * Register a new user, returns a user_id via json response and an api
      * token via cookies

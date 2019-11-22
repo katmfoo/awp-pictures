@@ -13,6 +13,9 @@
 // Routes that do not require authentication
 // ===========================================
 
+// Endpoint to check username availability
+$router->get('/users/username-taken', 'UserController@usernameTaken');
+
 // Endpoint to register
 $router->post('/users/register', 'UserController@register');
 
