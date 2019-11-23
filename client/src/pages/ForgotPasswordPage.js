@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { apiCall, logout, emailValid } from '../Util';
 
 /*
- * file - client/src/pages/ForgotPassword.js
+ * file - client/src/pages/ForgotPasswordPage.js
  * author - Patrick Richeal
  * 
  * Forgot password page

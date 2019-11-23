@@ -1,10 +1,10 @@
 import React from 'react';
 import { Grid, Header, Form, Segment, Button } from 'semantic-ui-react';
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { apiCall, getLoggedInUserId } from '../Util';
 
 /*
- * file - client/src/pages/ChangePassword.js
+ * file - client/src/pages/ChangePasswordPage.js
  * author - Patrick Richeal
  * 
  * Change password page
@@ -28,8 +28,6 @@ export default class ChangePasswordPage extends React.Component {
       change_password_success: '',
       change_password_disabled: false
     };
-
-    console.log(props.match.params.forgot_password_code);
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.clearCurrentPasswordError= this.clearCurrentPasswordError.bind(this);
@@ -142,6 +140,7 @@ export default class ChangePasswordPage extends React.Component {
           new Promise(resolve => setTimeout(resolve, 1000))
         ]);
 
+        // Set error/success message
         if (response.data.error) {
           this.setState({change_password_error: response.data.error});
         } else {

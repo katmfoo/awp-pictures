@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 
-import 'semantic-ui-css/semantic.min.css'
+/*
+ * file - client/src/index.js
+ * author - Patrick Richeal
+ * 
+ * Main index file, bootstraps app component
+ */
 
 ReactDOM.render(<App />, document.getElementById('root'));

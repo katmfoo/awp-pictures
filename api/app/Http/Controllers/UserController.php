@@ -55,7 +55,7 @@ class UserController extends Controller
         ]);
 
         // Send verification email
-        mail($request->input('email'), 'Verify email address', "Use the following link to verify your email address: ".$email_verification_code);
+        mail($request->input('email'), 'Verify email address', "Use the following link to verify your email address: http://elvis.rowan.edu/~richealp7/awp/awp-pictures/client/build/verify-email/".$email_verification_code);
 
         // Add user id to response
         $response = response()->json([
@@ -96,15 +96,15 @@ class UserController extends Controller
         ]);
 
         // Check what user this verification code is for (if any)
-        $verification_code_exists = app('db')->table('users')->where('email_verification_code', $request->input('verification_code'))->exists();
+        $email = app('db')->table('users')->where('email_verification_code', $request->input('verification_code'))->value('email');
         
         // If verification code is valid, mark email as verified
-        if ($verification_code_exists) {
+        if ($email) {
             app('db')->table('users')
                 ->where('email_verification_code', $request->input('verification_code'))
                 ->update(['email_verified' => 1]);
             
-            return response()->json((object)[]);
+            return response()->json(['email' => $email]);
         }
 
         return response()->json(['error' => 'Verification code not found']);
