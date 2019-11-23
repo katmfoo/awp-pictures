@@ -1,22 +1,13 @@
-.App {
-  text-align: center;
+.input-msg {
+  text-align: right;
+  padding-right: 10px;
+  margin: -8px 0 -7px 0;
 }
 
-.App-logo {
-  height: 40vmin;
+.input-msg.error {
+  color: #db2828;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #09d3ac;
+.input-msg.success {
+  color: #21ba45;
 }

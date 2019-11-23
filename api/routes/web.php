@@ -17,13 +17,13 @@
 $router->get('/users/username-taken', 'UserController@usernameTaken');
 
 // Endpoint to register
-$router->post('/users/register', 'UserController@register');
+$router->post('/users', 'UserController@register');
 
 // Endpoint to login
 $router->post('/users/login', 'UserController@login');
 
 // Endpoint to make a forgot password request
-$router->post('/users/password/forgot', 'UserController@forgotPassword');
+$router->post('/users/forgot-password', 'UserController@forgotPassword');
 
 // Endpoint to update a users password
 $router->put('/users/password', 'UserController@updatePassword');

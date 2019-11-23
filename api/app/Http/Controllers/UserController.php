@@ -55,20 +55,19 @@ class UserController extends Controller
         ]);
 
         // Send verification email
-        mail($request->input('email'), 'Verify email address', "Use the following code to verify your email address: ".$email_verification_code);
+        mail($request->input('email'), 'Verify email address', "Use the following link to verify your email address: ".$email_verification_code);
 
-        if ($user_id) {
-            // Add user id to response
-            $response = response()->json(['user_id' => (string) $user_id]);
+        // Add user id to response
+        $response = response()->json([
+            'user_id' => (string) $user_id,
+            'username' => $request->input('username')
+        ]);
 
-            // Generate api token for this user and attach to response as cookie
-            $api_token = $this->generateApiToken($user_id);
-            $response->cookie(new Cookie('api_token', $api_token));
+        // Generate api token for this user and attach to response as cookie
+        $api_token = $this->generateApiToken($user_id);
+        $response->cookie(new Cookie('api_token', $api_token));
 
-            return $response;
-        } else {
-            return response()->json(['error' => 'Internal server error'], 500);
-        }
+        return $response;
     }
 
     /**
@@ -108,7 +107,7 @@ class UserController extends Controller
             return response()->json((object)[]);
         }
 
-        return response()->json(['error' => 'Verification code not found'], 400);
+        return response()->json(['error' => 'Verification code not found']);
     }
 
     /**
@@ -132,7 +131,10 @@ class UserController extends Controller
             // If the given password matches the given users password
             if (password_verify($request->input('password'), $user->password_hash)) {
                 // Add user id to response
-                $response = response()->json(['user_id' => (string) $user->id]);
+                $response = response()->json([
+                    'user_id' => (string) $user->id,
+                    'username' => $request->input('username')
+                ]);
 
                 // Generate api token for this user and attach to response as cookie
                 $api_token = $this->generateApiToken($user->id);
@@ -142,7 +144,7 @@ class UserController extends Controller
             }
         }
 
-        return response()->json(['error' => 'Invalid login credentials'], 401);
+        return response()->json(['error' => 'Invalid login credentials']);
     }
 
     /**
@@ -189,7 +191,7 @@ class UserController extends Controller
             
             // Ensure current password is correct
             if (!password_verify($request->input('current_password'), $password_hash)) {
-                return response()->json(['error' => 'Current password is incorrect'], 400);
+                return response()->json(['error' => 'Current password is incorrect']);
             }
         } else {
             // If the current password isn't set, that means forgot password code is, see
@@ -207,7 +209,7 @@ class UserController extends Controller
                     ->where('user_id', $user_id)
                     ->update(['used' => 1]);
             } else {
-                return response()->json(['error' => 'Forgot password code not found'], 400);
+                return response()->json(['error' => 'Forgot password code not found']);
             }
         }
 
@@ -241,12 +243,12 @@ class UserController extends Controller
             $forgot_password_code = $this->generateForgotPasswordCode($user->id);
 
             // Send forgot password email
-            mail($user->email, 'Forgot password', "Use the following code to reset your password: ".$forgot_password_code);
+            mail($user->email, 'Forgot password', "Use the following link to reset your password: http://elvis.rowan.edu/~richealp7/awp/awp-pictures/client/build/change-password/".$forgot_password_code);
 
             return response()->json((object)[]);
         }
         
-        return response()->json(['error' => 'Could not find that user'], 400);
+        return response()->json(['error' => 'Could not find that user']);
     }
 
     /**

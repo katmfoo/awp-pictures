@@ -1,59 +1,24 @@
 import React from 'react';
+import { BrowserRouter, Switch, Route, useParams } from "react-router-dom";
+import LoginPage from './pages/LoginPage';
+import CreateAccountPage from './pages/CreateAccountPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import BrowsePage from './pages/BrowsePage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
+
 import './App.css';
-
-import { Button } from 'semantic-ui-react'
-
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
 
 export default function App() {
   return (
-    <Router basename="/~richealp7/awp/awp-pictures/client/build">
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-            <li>
-              <Link to="/users">Users</Link>
-            </li>
-          </ul>
-        </nav>
-
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
-        <Switch>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/users">
-            <Users />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
-      </div>
-    </Router>
+    <BrowserRouter basename="/~richealp7/awp/awp-pictures/client/build">
+      <Switch>
+        <Route path="/create-account" component={CreateAccountPage} />
+        <Route path="/login" component={LoginPage} />
+        <Route path="/forgot-password" component={ForgotPasswordPage} />
+        <Route path="/change-password/:forgot_password_code" component={ChangePasswordPage} />
+        <Route path="/change-password" component={ChangePasswordPage} />
+        <Route path="/" component={BrowsePage} />
+      </Switch>
+    </BrowserRouter>
   );
-}
-
-function Home() {
-  return <h2>Home</h2>;
-}
-
-function About() {
-  return <h2>About</h2>;
-}
-
-function Users() {
-  return <h2>Users</h2>;
 }
