@@ -86,7 +86,7 @@ export default class LoginPage extends React.Component {
 
       // Make api request to login, ensure response time is atleast 1 second
       const [response] = await Promise.all([
-        apiCall.post('/users/login', {
+        apiCall().post('/users/login', {
           username: this.state.username,
           password: this.state.password
         }),
@@ -99,9 +99,10 @@ export default class LoginPage extends React.Component {
       if (response.data.error) {
         this.setState({login_error: 'Invalid login credentials'});
       } else {
-        // Set user in local storage
+        // Set user data and api token in local storage
         localStorage.setItem('user_id', response.data.user_id);
         localStorage.setItem('username', response.data.username);
+        localStorage.setItem('api_token', response.data.api_token);
 
         // Navigate to browse page
         this.props.history.push('/');

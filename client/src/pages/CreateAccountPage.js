@@ -75,7 +75,7 @@ export default class CreateAccountPage extends React.Component {
       // Make api request to see if username is taken, ensure response time
       // is atleast 1 second
       const [response] = await Promise.all([
-        apiCall.get('/users/username-taken', {
+        apiCall().get('/users/username-taken', {
           params: {
             username: this.state.username
           }
@@ -177,7 +177,7 @@ export default class CreateAccountPage extends React.Component {
       // Make api request to create account, ensure response time
       // is atleast 1 second
       const [response] = await Promise.all([
-        apiCall.post('/users', {
+        apiCall().post('/users', {
           username: this.state.username,
           password: this.state.password,
           email: this.state.email
@@ -188,9 +188,10 @@ export default class CreateAccountPage extends React.Component {
       // Set create account button loading false
       this.setState({create_account_loading: false});
 
-      // Set user in local storage
+      // Set user data and api token in local storage
       localStorage.setItem('user_id', response.data.user_id);
       localStorage.setItem('username', response.data.username);
+      localStorage.setItem('api_token', response.data.api_token);
 
       // Navigate to browse page
       this.props.history.push('/');

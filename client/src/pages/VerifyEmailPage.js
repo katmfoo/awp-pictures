@@ -40,7 +40,7 @@ export default class VerifyEmailPage extends React.Component {
     try {
       // Make api request to verify email, ensure response time is atleast 1 second
       const [response] = await Promise.all([
-        apiCall.post('/users/verify-email', {
+        apiCall().post('/users/verify-email', {
           verification_code: this.props.match.params.verification_code
         }),
         new Promise(resolve => setTimeout(resolve, 1000))

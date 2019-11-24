@@ -1,9 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Cookie;
 use Helpers;
 use Laravel\Lumen\Routing\Controller;
 
@@ -33,8 +31,7 @@ class UserController extends Controller
     }
 
     /**
-     * Register a new user, returns a user_id via json response and an api
-     * token via cookies
+     * Register a new user, returns user info and api token via json response
      */
     public function register(Request $request)
     {
@@ -57,17 +54,12 @@ class UserController extends Controller
         // Send verification email
         mail($request->input('email'), 'Verify email address', "Use the following link to verify your email address: http://elvis.rowan.edu/~richealp7/awp/awp-pictures/client/build/verify-email/".$email_verification_code);
 
-        // Add user id to response
-        $response = response()->json([
+        // Add user info and api token to response
+        return response()->json([
             'user_id' => (string) $user_id,
-            'username' => $request->input('username')
+            'username' => $request->input('username'),
+            'api_token' => $this->generateApiToken($user_id)
         ]);
-
-        // Generate api token for this user and attach to response as cookie
-        $api_token = $this->generateApiToken($user_id);
-        $response->cookie(new Cookie('api_token', $api_token));
-
-        return $response;
     }
 
     /**
@@ -111,8 +103,7 @@ class UserController extends Controller
     }
 
     /**
-     * Validate a username and password, returns a user_id via json response and an
-     * api token via cookies
+     * Validate a username and password, returns user info and api token via json response
      */
     public function login(Request $request)
     {
@@ -130,17 +121,12 @@ class UserController extends Controller
         if ($user) {
             // If the given password matches the given users password
             if (password_verify($request->input('password'), $user->password_hash)) {
-                // Add user id to response
-                $response = response()->json([
+                // Add user info and api token to response
+                return response()->json([
                     'user_id' => (string) $user->id,
-                    'username' => $request->input('username')
+                    'username' => $request->input('username'),
+                    'api_token' => $this->generateApiToken($user->id)
                 ]);
-
-                // Generate api token for this user and attach to response as cookie
-                $api_token = $this->generateApiToken($user->id);
-                $response->cookie(new Cookie('api_token', $api_token));
-
-                return $response;
             }
         }
 

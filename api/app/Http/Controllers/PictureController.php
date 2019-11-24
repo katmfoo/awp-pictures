@@ -32,7 +32,7 @@ class PictureController extends Controller
 
         // Make sure file type is one that we support
         if (!in_array($file_type, ['png', 'jpg', 'jpeg', 'gif'])) {
-            return response()->json(['error' => 'Unsupported file type'], 400);
+            return response()->json(['error' => 'Unsupported file type']);
         }
 
         // Generate file name for picture

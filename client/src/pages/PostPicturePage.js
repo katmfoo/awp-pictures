@@ -30,6 +30,7 @@ export default class PostPicturePage extends React.Component {
     this.handlePictureChange = this.handlePictureChange.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.validateTitle = this.validateTitle.bind(this);
+    this.validateCaption = this.validateCaption.bind(this);
     this.postPicture = this.postPicture.bind(this);
   }
 
@@ -85,7 +86,8 @@ export default class PostPicturePage extends React.Component {
   async postPicture() {
     let should_submit = true;
 
-    console.log(this.state);
+    // Clear post picture error
+    this.setState({post_picture_error: ''});
 
     // Make sure all required inputs are filled in
     if (this.state.picture === '') {
@@ -98,7 +100,7 @@ export default class PostPicturePage extends React.Component {
     }
 
     // If any existing errors, don't post picture
-    if (this.state.title_error) {
+    if (this.state.title_error || this.state.caption_error) {
       should_submit = false;
     }
 
@@ -116,14 +118,30 @@ export default class PostPicturePage extends React.Component {
         api_data.append('caption', this.state.caption);
       }
 
-      // Make api request to post picture, ensure response time
-      // is atleast 1 second
-      const [response] = await Promise.all([
-        apiCall.post('/pictures', api_data),
-        new Promise(resolve => setTimeout(resolve, 1000))
-      ]);
+      try {
+        // Make api request to post picture, ensure response time
+        // is atleast 1 second
+        const [response] = await Promise.all([
+          apiCall().post('/pictures', api_data),
+          new Promise(resolve => setTimeout(resolve, 1000))
+        ]);
+              
+        // Set post picture button loading false
+        this.setState({post_picture_loading: false});
 
-      console.log(response);
+        // Set error message or go to new picture
+        if (response.data.error) {
+          this.setState({post_picture_error: response.data.error});
+        } else {
+          // go to picture page
+        }
+      } catch (e) {
+        // Set post picture button loading false and error message
+        this.setState({
+          post_picture_loading: false,
+          post_picture_error: 'Uploading picture failed'
+        });
+      }
     }
   }
 
@@ -137,12 +155,13 @@ export default class PostPicturePage extends React.Component {
             value={this.state.picture}
             onChange={this.handlePictureChange}
             type='file'
-            style={{border: 'none', paddingLeft: '2px', width: 'auto', marginBottom: '2px'}}
+            style={{border: 'none', paddingLeft: '2px', width: 'auto'}}
           />
+          <div style={{paddingLeft: '5px', color: '#a2a2a2', marginTop: '-7px'}}>Supported file types: png, jpg, gif (max 20mb)</div>
           {this.state.picture_error &&
-            <div className="input-msg left error" style={{marginBottom: '0px'}}>{this.state.picture_error}</div>
+            <div className="input-msg left error" style={{marginBottom: '0px', marginTop: '2px'}}>{this.state.picture_error}</div>
           }
-          <Form.Field style={{marginTop: '6px'}}>
+          <Form.Field style={{marginTop: '14px'}}>
             <Form.Input
               name='title'
               value={this.state.title}
@@ -152,16 +171,32 @@ export default class PostPicturePage extends React.Component {
               fluid
               placeholder='Title'
             />
-            {this.state.title_error &&
-              <div className="input-msg left error">{this.state.title_error}</div>
-            }
+            <div className="input-msg right error">
+              {this.state.title_error &&
+                <span style={{float: 'left', paddingLeft: '5px'}}>{this.state.title_error}</span>
+              }
+              <span style={{color: '#a2a2a2'}}>{64 - this.state.title.length > 0 ? 64 - this.state.title.length : 0} chars left</span>
+            </div>
           </Form.Field>
           <Form.Field>
             <TextArea
+              name='caption'
+              value={this.state.caption}
+              onChange={this.handleInputChange}
+              onBlur={this.validateCaption}
               placeholder='Caption (optional)'
               style={{fontFamily: 'lato'}}
             />
+            <div className="input-msg right error" style={{marginTop: '4px'}}>
+              {this.state.caption_error &&
+                <span style={{float: 'left', paddingLeft: '5px'}}>{this.state.caption_error}</span>
+              }
+              <span style={{color: '#a2a2a2'}}>{256 - this.state.caption.length > 0 ? 256 - this.state.caption.length : 0} chars left</span>
+            </div>
           </Form.Field>
+          {this.state.post_picture_error &&
+            <div className="input-msg left error" style={{marginBottom: '5px'}}>{this.state.post_picture_error}</div>
+          }
           <Button
             size='medium'
             style={{marginTop: '4px'}}

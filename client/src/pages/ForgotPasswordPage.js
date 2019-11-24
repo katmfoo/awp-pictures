@@ -104,7 +104,7 @@ export default class ForgotPasswordPage extends React.Component {
 
       // Make api request to forgot password, ensure response time is atleast 1 second
       const [response] = await Promise.all([
-        apiCall.post('/users/forgot-password', {
+        apiCall().post('/users/forgot-password', {
           username: this.state.username,
           email: this.state.email
         }),

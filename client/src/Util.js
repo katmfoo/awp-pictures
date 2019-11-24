@@ -10,10 +10,16 @@ import axios from "axios";
 /**
  * Helper function to make axios api calls
  */
-export const apiCall = axios.create({
-  baseURL: "http://localhost/awp-pictures/api/public",
-  responseType: "json"
-});
+export const apiCall = () => {
+  let api_token = localStorage.getItem('api_token');
+  return axios.create({
+    baseURL: "http://localhost/awp-pictures/api/public",
+    headers: {
+      'AWP-Token': api_token
+    },
+    responseType: "json"
+  });
+}
 
 /**
  * Function to validate email address

@@ -136,7 +136,7 @@ export default class ChangePasswordPage extends React.Component {
       // Make api request to change password, ensure response time is atleast 1 second
       try {
         const [response] = await Promise.all([
-          apiCall.put('/users/password', api_data),
+          apiCall().put('/users/password', api_data),
           new Promise(resolve => setTimeout(resolve, 1000))
         ]);
 
