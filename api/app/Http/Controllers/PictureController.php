@@ -101,17 +101,21 @@ class PictureController extends Controller
         $this->validate($request, [
             'page' => 'integer',
             'per_page' => 'integer|max:30',
-            'username' => 'string'
+            'username' => 'string',
+            'order' => 'string'
         ]);
 
         // Set page size to whatever they sent in or a default of 15
         $page_size = $request->input('page_size') ?? 15;
 
+        // Set order to whatever they send in or a default of 'desc'
+        $order = $request->input('order') ?? 'desc';
+
         // Query database for pictures
         $data = app('db')->table('pictures')
             ->join('users', 'users.id', 'pictures.user_id')
             ->select('pictures.id', 'pretty_id as picture_id', 'file_name', 'file_type', 'title', 'caption', 'username', 'pictures.created_at')
-            ->orderBy('created_at', 'desc');
+            ->orderBy('created_at', $order);
 
         // If pretty_id isn't null, add where clause
         if ($pretty_id != null) {
