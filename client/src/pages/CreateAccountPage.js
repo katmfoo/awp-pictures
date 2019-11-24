@@ -221,10 +221,10 @@ export default class CreateAccountPage extends React.Component {
                   placeholder='Username'
                 />
                 {this.state.username_error &&
-                  <div className="input-msg error">{this.state.username_error}</div>
+                  <div className="input-msg right error">{this.state.username_error}</div>
                 }
                 {this.state.username_success &&
-                  <div className="input-msg success">{this.state.username_success}</div>
+                  <div className="input-msg right success">{this.state.username_success}</div>
                 }
               </Form.Field>
               <Form.Field>
@@ -240,7 +240,7 @@ export default class CreateAccountPage extends React.Component {
                   placeholder='Email'
                 />
                 {this.state.email_error &&
-                  <div className="input-msg error">{this.state.email_error}</div>
+                  <div className="input-msg right error">{this.state.email_error}</div>
                 }
               </Form.Field>
               <Form.Field>
@@ -257,7 +257,7 @@ export default class CreateAccountPage extends React.Component {
                   type='password'
                 />
                 {this.state.password_error &&
-                  <div className="input-msg error">{this.state.password_error}</div>
+                  <div className="input-msg right error">{this.state.password_error}</div>
                 }
               </Form.Field>
               <Form.Field>
@@ -274,7 +274,7 @@ export default class CreateAccountPage extends React.Component {
                   type='password'
                 />
                 {this.state.confirm_password_error &&
-                  <div className="input-msg error">{this.state.confirm_password_error}</div>
+                  <div className="input-msg right error">{this.state.confirm_password_error}</div>
                 }
               </Form.Field>
   

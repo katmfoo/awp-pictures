@@ -132,7 +132,7 @@ export default class LoginPage extends React.Component {
                   placeholder='Username'
                 />
                 {this.state.username_error &&
-                  <div className="input-msg error">{this.state.username_error}</div>
+                  <div className="input-msg right error">{this.state.username_error}</div>
                 }
               </Form.Field>
               <Form.Field>
@@ -149,11 +149,11 @@ export default class LoginPage extends React.Component {
                   type='password'
                 />
                 {this.state.password_error &&
-                  <div className="input-msg error">{this.state.password_error}</div>
+                  <div className="input-msg right error">{this.state.password_error}</div>
                 }
               </Form.Field>
               {this.state.login_error &&
-                <div className="input-msg error">{this.state.login_error}</div>
+                <div className="input-msg right error">{this.state.login_error}</div>
               }
               <Button
                 loading={this.state.login_loading}

@@ -79,6 +79,7 @@ create table pictures
 	pretty_id varchar(6) not null,
 	file_name varchar(32) not null,
 	file_type varchar(4) not null,
+	title varchar(64) not null,
 	caption varchar(256) null,
 	user_id int not null,
 	created_at datetime default CURRENT_TIMESTAMP not null,

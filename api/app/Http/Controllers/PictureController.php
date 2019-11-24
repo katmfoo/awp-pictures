@@ -23,6 +23,7 @@ class PictureController extends Controller
     {
         $this->validate($request, [
             'picture' => 'required|image|max:20000',
+            'title' => 'required|string|max:64',
             'caption' => 'string|max:256'
         ]);
 
@@ -48,6 +49,7 @@ class PictureController extends Controller
             'pretty_id' => $pretty_id,
             'file_name' => $file_name,
             'file_type' => $file_type,
+            'title' => $request->input('title'),
             'user_id' => $request->user()
         ];
 
@@ -108,7 +110,7 @@ class PictureController extends Controller
         // Query database for pictures
         $data = app('db')->table('pictures')
             ->join('users', 'users.id', 'pictures.user_id')
-            ->select('pictures.id', 'pretty_id as picture_id', 'file_name', 'file_type', 'caption', 'username', 'pictures.created_at')
+            ->select('pictures.id', 'pretty_id as picture_id', 'file_name', 'file_type', 'title', 'caption', 'username', 'pictures.created_at')
             ->orderBy('created_at', 'desc');
 
         // If pretty_id isn't null, add where clause

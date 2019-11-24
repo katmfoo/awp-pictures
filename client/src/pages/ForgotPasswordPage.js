@@ -149,7 +149,7 @@ export default class ForgotPasswordPage extends React.Component {
                   placeholder='Username'
                 />
                 {this.state.username_error &&
-                  <div className="input-msg error">{this.state.username_error}</div>
+                  <div className="input-msg right error">{this.state.username_error}</div>
                 }
               </Form.Field>
               <Form.Field>
@@ -166,14 +166,14 @@ export default class ForgotPasswordPage extends React.Component {
                   placeholder='Email'
                 />
                 {this.state.email_error &&
-                  <div className="input-msg error">{this.state.email_error}</div>
+                  <div className="input-msg right error">{this.state.email_error}</div>
                 }
               </Form.Field>
               {this.state.forgot_password_error &&
-                <div className="input-msg error">{this.state.forgot_password_error}</div>
+                <div className="input-msg right error">{this.state.forgot_password_error}</div>
               }
               {this.state.forgot_password_success &&
-                <div className="input-msg success">{this.state.forgot_password_success}</div>
+                <div className="input-msg right success">{this.state.forgot_password_success}</div>
               }
               <Button
                 loading={this.state.forgot_password_loading}

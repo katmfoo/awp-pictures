@@ -184,7 +184,7 @@ export default class ChangePasswordPage extends React.Component {
                     type='password'
                   />
                   {this.state.current_password_error &&
-                    <div className="input-msg error">{this.state.current_password_error}</div>
+                    <div className="input-msg right error">{this.state.current_password_error}</div>
                   }
                 </Form.Field>
               }
@@ -203,7 +203,7 @@ export default class ChangePasswordPage extends React.Component {
                   type='password'
                 />
                 {this.state.password_error &&
-                  <div className="input-msg error">{this.state.password_error}</div>
+                  <div className="input-msg right error">{this.state.password_error}</div>
                 }
               </Form.Field>
               <Form.Field>
@@ -221,14 +221,14 @@ export default class ChangePasswordPage extends React.Component {
                   type='password'
                 />
                 {this.state.confirm_password_error &&
-                  <div className="input-msg error">{this.state.confirm_password_error}</div>
+                  <div className="input-msg right error">{this.state.confirm_password_error}</div>
                 }
               </Form.Field>
               {this.state.change_password_error &&
-                <div className="input-msg error">{this.state.change_password_error}</div>
+                <div className="input-msg right error">{this.state.change_password_error}</div>
               }
               {this.state.change_password_success &&
-                <div className="input-msg success">{this.state.change_password_success}</div>
+                <div className="input-msg right success">{this.state.change_password_success}</div>
               }
               <Button
                 loading={this.state.change_password_loading}

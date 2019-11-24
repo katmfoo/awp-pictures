@@ -1,7 +1,8 @@
 import React from 'react';
 import { Grid, Menu, Dropdown } from 'semantic-ui-react';
-import { Link } from "react-router-dom";
-import { getLoggedInUsername, logout } from "../Util";
+import { Link, Switch, Route } from 'react-router-dom';
+import { getLoggedInUsername, logout } from '../Util';
+import PostPicturePage from './PostPicturePage';
 
 /*
  * file - client/src/pages/BrowsePage.js
@@ -23,17 +24,24 @@ export default class BrowsePage extends React.Component {
    */
   logout() {
     logout();
+
+    // Rerender component, logout call above will modify local storage
     this.forceUpdate();
+
+    // Navigate to browse page
+    this.props.history.push('/');
   }
 
   render() {
     return (
       <Grid textAlign='center'>
-        <Grid.Column style={{ maxWidth: 600 }}>
+        <Grid.Column style={{ maxWidth: 600 }} textAlign='left'>
           <Menu style={{marginTop: '25px'}}>
             <Menu.Item header>AWP Pictures</Menu.Item>
             <Menu.Item as={Link} to='/'>Browse</Menu.Item>
-            <Menu.Item as={Link} to='/post-picture'>Post picture</Menu.Item>
+            {getLoggedInUsername() &&
+              <Menu.Item as={Link} to='/post-picture'>Post picture</Menu.Item>
+            }
             
             <Menu.Menu position='right'>
               {!getLoggedInUsername() &&
@@ -49,6 +57,9 @@ export default class BrowsePage extends React.Component {
               }
             </Menu.Menu>
           </Menu>
+          <Switch>
+            <Route path="/post-picture" component={PostPicturePage} />
+          </Switch>
         </Grid.Column>
       </Grid>
     );
