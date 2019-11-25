@@ -10,6 +10,7 @@ drop table if exists users;
 drop table if exists api_tokens;
 drop table if exists forgot_password_codes;
 drop table if exists pictures;
+drop table if exists comments;
 
 
 /*

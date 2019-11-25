@@ -4,8 +4,8 @@
  * file - api/routes/web.php
  * author - Patrick Richeal
  * 
- * Routes file, this is where I define all the routes of my API and link
- * them to functions in either my UserController or PictureController.
+ * Routes file, this is where all of the routes for the api are defined
+ * and linked to functions in either the UserController or PictureController.
  * Controller files can be found in api/app/Http/Controllers
  */
 

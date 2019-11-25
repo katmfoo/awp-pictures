@@ -23,10 +23,10 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app['auth']->viaRequest('api', function (Request $request) {
-            // Look for api_token cookie
+            // Look for api_token header
             $api_token = $request->header('AWP-Token');
             if ($api_token) {
-                // Look for user with given api token
+                // Look for user with given api token, return if exists
                 $user_id = app('db')->table('api_tokens')->where('token', $api_token)->value('user_id');
                 if ($user_id) {
                     return $user_id;
