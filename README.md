@@ -25,7 +25,7 @@ The frameworks I used create a lot of files that you really don't need to look a
 
 ## API
 
-* [`api/bootstrap/app.php`'](https://github.com/pricheal/awp-pictures/blob/master/api/bootstrap/app.php): bootstraps the api framework, nothing super interesting
+* [`api/bootstrap/app.php`](https://github.com/pricheal/awp-pictures/blob/master/api/bootstrap/app.php): bootstraps the api framework, nothing super interesting
 * [`api/app/Http/Middleware/Authenticate.php`](https://github.com/pricheal/awp-pictures/blob/master/api/app/Http/Middleware/Authenticate.php): middleware to authenticate user requests
 * [`api/app/Providers/AuthServiceProvider.php`](https://github.com/pricheal/awp-pictures/blob/master/api/app/Providers/AuthServiceProvider.php): service used by auth middleware
 * [`api/routes/web.php`](https://github.com/pricheal/awp-pictures/blob/master/api/routes/web.php): defines the routes of all the endpoints in the api
