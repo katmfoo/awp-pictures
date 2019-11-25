@@ -75,3 +75,5 @@ You don't need to read this part Professor Provine, just here for my reference.
 </IfModule>
 ```
 5. `chmod 755 -R ../../awp-pictures`
+6. `cd awp-pictures/api/`
+7. `chmod 777 -R storage`
