@@ -17,7 +17,7 @@ The client is eventually built for production which results in a completely stat
 
 # What files to look at
 
-The frameworks I used create a lot of files that you really don't need to look at. I recommend looking over the following files in the following order, the code should document itself well enough. (links go to txt versions of each file)
+The frameworks I used create a lot of files that you really don't need to look at. I recommend looking over the following files in the following order, the code should document itself well enough.
 
 ## Database
 
