@@ -137,7 +137,7 @@ class PictureController extends Controller
             
             // Get the comments for this picture
             $comments = app('db')->table('comments')
-                ->join('users', 'comments.user_id', 'users.id')
+                ->leftJoin('users', 'comments.user_id', 'users.id')
                 ->select('comments.id as comment_id', 'comment', 'username', 'comments.user_id', 'comments.created_at')
                 ->where('picture_id', $item->id)
                 ->orderBy('created_at', 'asc')
@@ -147,7 +147,9 @@ class PictureController extends Controller
             // Do some stuff for each comment
             foreach ($item->comments as &$comment) {
                 $comment->comment_id = (string) $comment->comment_id;
-                $comment->user_id = (string) $comment->user_id;
+                if ($comment->user_id) {
+                    $comment->user_id = (string) $comment->user_id;
+                }
             }
 
             // Make user_id a string

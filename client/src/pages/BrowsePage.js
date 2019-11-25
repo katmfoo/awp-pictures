@@ -3,7 +3,7 @@ import { Grid, Menu, Dropdown, Item, Icon, Button } from 'semantic-ui-react';
 import { Link, Switch, Route } from 'react-router-dom';
 import queryString from 'query-string'
 import moment from 'moment';
-import { getLoggedInUsername, logout, apiCall } from '../Util';
+import { getLoggedInUsername, logout, apiCall, getLoggedInUserId } from '../Util';
 import PostPicturePage from './PostPicturePage';
 import PicturePage from './PicturePage';
 
@@ -33,6 +33,7 @@ export default class BrowsePage extends React.Component {
     this.nextPage = this.nextPage.bind(this);
     this.prevPage = this.prevPage.bind(this);
     this.logout = this.logout.bind(this);
+    this.deleteAccount = this.deleteAccount.bind(this);
   }
 
   /**
@@ -117,6 +118,28 @@ export default class BrowsePage extends React.Component {
     this.props.history.push('/');
   }
 
+  /**
+   * Function to delete account
+   */
+  async deleteAccount() {
+    // Show confirmation for deleting account
+    let should_delete = window.confirm('Are you sure you want to delete your account?');
+
+    if (should_delete) {
+      // Make api call to delete comment
+      await apiCall().delete('/users/' + getLoggedInUserId());
+
+      // Logout user
+      logout();
+
+      // Refresh pictures
+      this.getPictures();
+
+      // Go to browse page
+      this.props.history.push('/');
+    }
+  }
+
   render() {
     return (
       <Grid textAlign='center'>
@@ -136,6 +159,7 @@ export default class BrowsePage extends React.Component {
                 <Dropdown item text={getLoggedInUsername()}>
                   <Dropdown.Menu>
                     <Dropdown.Item as={Link} to='/change-password'>Change password</Dropdown.Item>
+                    <Dropdown.Item onClick={this.deleteAccount}>Delete account</Dropdown.Item>
                     <Dropdown.Item onClick={this.logout}>Logout</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>

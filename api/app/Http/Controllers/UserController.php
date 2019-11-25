@@ -259,4 +259,21 @@ class UserController extends Controller
 
         return $forgot_password_code;
     }
+
+    /*
+     * Delete a user
+     */
+    public function delete(Request $request, $user_id) {
+        // Make sure they are allowed to delete user
+        if ($user_id != $request->user()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Delete user
+        app('db')->table('users')
+            ->where('id', $user_id)
+            ->delete();
+        
+        return response()->json((object)[]);
+    }
 }

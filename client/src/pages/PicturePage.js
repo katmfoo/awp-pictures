@@ -77,7 +77,7 @@ export default class PicturePage extends React.Component {
    */
   async deleteComment(comment) {
     // Show confirmation for deleting comment
-    let should_delete = window.confirm('Are you sure you want to delete this comment?')
+    let should_delete = window.confirm('Are you sure you want to delete this comment?');
 
     if (should_delete) {
       // Make api call to delete comment
@@ -151,7 +151,7 @@ export default class PicturePage extends React.Component {
                 <Comment.Content>
                   <Comment.Author>{comment.username ? comment.username : '[deleted]'}&nbsp;&nbsp;<span style={{fontSize: '12.25px', color: 'rgba(0,0,0,.4)', fontWeight: 'normal'}}>{moment(comment.created_at).fromNow()}</span></Comment.Author>
                   <Comment.Text>{comment.comment ? comment.comment : '[deleted]'}</Comment.Text>
-                  {comment.comment != null && (comment.user_id === getLoggedInUserId() || this.state.picture.user_id === getLoggedInUserId()) &&
+                  {comment.comment != null && getLoggedInUserId() && (comment.user_id === getLoggedInUserId() || this.state.picture.user_id === getLoggedInUserId()) &&
                     <Comment.Actions>
                       <Comment.Action onClick={() => this.deleteComment(comment)}>Delete</Comment.Action>
                     </Comment.Actions>
@@ -161,34 +161,38 @@ export default class PicturePage extends React.Component {
             )
           }) : null}
         </Comment.Group>
-
-        <Header as='h3'>Post a comment</Header>
-        <Form size='large' onSubmit={this.postComment}>
-          <Form.Field>
-            <TextArea
-              name='comment'
-              value={this.state.comment}
-              onChange={this.handleInputChange}
-              onBlur={this.validateComment}
-              placeholder='Comment'
-              style={{fontFamily: 'lato'}}
-            />
-            <div className="input-msg right error" style={{marginTop: '4px'}}>
-              {this.state.comment_error &&
-                <span style={{float: 'left', paddingLeft: '5px'}}>{this.state.comment_error}</span>
-              }
-              <span style={{color: '#a2a2a2'}}>{256 - this.state.comment.length > 0 ? 256 - this.state.comment.length : 0} chars left</span>
-            </div>
-          </Form.Field>
-
-          <Button
-            size='medium'
-            style={{margin: '4px 0 20px 0'}}
-            loading={this.state.comment_loading}
-          >
-            Post comment
-          </Button>
-        </Form>
+        
+        {getLoggedInUserId() &&
+          <div>
+            <Header as='h3'>Post a comment</Header>
+            <Form size='large' onSubmit={this.postComment}>
+              <Form.Field>
+                <TextArea
+                  name='comment'
+                  value={this.state.comment}
+                  onChange={this.handleInputChange}
+                  onBlur={this.validateComment}
+                  placeholder='Comment'
+                  style={{fontFamily: 'lato'}}
+                />
+                <div className="input-msg right error" style={{marginTop: '4px'}}>
+                  {this.state.comment_error &&
+                    <span style={{float: 'left', paddingLeft: '5px'}}>{this.state.comment_error}</span>
+                  }
+                  <span style={{color: '#a2a2a2'}}>{256 - this.state.comment.length > 0 ? 256 - this.state.comment.length : 0} chars left</span>
+                </div>
+              </Form.Field>
+  
+              <Button
+                size='medium'
+                style={{margin: '4px 0 20px 0'}}
+                loading={this.state.comment_loading}
+              >
+                Post comment
+              </Button>
+            </Form>
+          </div>
+        }
       </div>
     );
   }

@@ -47,6 +47,9 @@ $router->get('/pictures/{pretty_id}', 'PictureController@get');
 // given by either register/login endpoint is sent up
 $router->group(['middleware' => 'auth'], function ($router) {
 
+    // Endpoint to delete account
+    $router->delete('/users/{user_id}', 'UserController@delete');
+
     // Endpoint to upload a picture
     $router->post('/pictures', 'PictureController@upload');
 
