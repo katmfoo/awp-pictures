@@ -5,6 +5,7 @@ import queryString from 'query-string'
 import moment from 'moment';
 import { getLoggedInUsername, logout, apiCall } from '../Util';
 import PostPicturePage from './PostPicturePage';
+import PicturePage from './PicturePage';
 
 /*
  * file - client/src/pages/BrowsePage.js
@@ -142,7 +143,10 @@ export default class BrowsePage extends React.Component {
             </Menu.Menu>
           </Menu>
           <Switch>
-            <Route path="/post-picture" component={PostPicturePage} />
+            <Route path='/post-picture'>
+              <PostPicturePage refreshBrowsePictures={this.getPictures} />
+            </Route>
+            <Route path="/picture/:picture_id" component={PicturePage} />
             <Route path="/">
               <div style={{marginTop: '20px'}}>
                 Sort by&nbsp;
@@ -151,14 +155,17 @@ export default class BrowsePage extends React.Component {
                   {key: 2, text: 'oldest', value: 'asc'}
                 ]} value={this.state.order} onChange={this.handleOrderChange} />
               </div>
+              {this.state.pictures.length === 0 &&
+                <div style={{marginTop: '45px'}}>No pictures</div>
+              }
               <Item.Group divided>
                 {this.state.pictures.map((picture) => {
                   return (
-                    <Item key={picture.picture_id} as='a'>
+                    <Item key={picture.picture_id}>
                       <Item.Image size='tiny' src={picture.url} />
                 
                       <Item.Content verticalAlign='middle'>
-                        <Item.Header style={{marginTop: '3px'}}>{picture.title}</Item.Header>
+                        <Link to={'/picture/' + picture.picture_id}><Item.Header style={{marginTop: '3px', fontSize: '1.2rem', fontWeight: 'bold'}}>{picture.title}</Item.Header></Link>
                         <Item.Meta>posted by {picture.username}</Item.Meta>
                         <Item.Extra style={{marginTop: '-1px'}}><Icon fitted name='comment' /> {picture.comments.length} comments <Icon fitted name='time' style={{paddingLeft: '10px'}}/> {moment(picture.created_at).fromNow()}</Item.Extra>
                       </Item.Content>

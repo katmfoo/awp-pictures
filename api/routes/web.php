@@ -31,6 +31,12 @@ $router->put('/users/password', 'UserController@updatePassword');
 // Endpoint to verify your email
 $router->post('/users/verify-email', 'UserController@verifyEmail');
 
+// Endpoint to get a paginated list of pictures
+$router->get('/pictures/', 'PictureController@get');
+
+// Endpoint to get a single picture
+$router->get('/pictures/{pretty_id}', 'PictureController@get');
+
 
 
 // ===========================================
@@ -40,12 +46,6 @@ $router->post('/users/verify-email', 'UserController@verifyEmail');
 // All these endpoints go through the middleware auth, ensure that the cookie
 // given by either register/login endpoint is sent up
 $router->group(['middleware' => 'auth'], function ($router) {
-
-    // Endpoint to get a paginated list of pictures
-    $router->get('/pictures/', 'PictureController@get');
-
-    // Endpoint to get a single picture
-    $router->get('/pictures/{pretty_id}', 'PictureController@get');
 
     // Endpoint to upload a picture
     $router->post('/pictures', 'PictureController@upload');

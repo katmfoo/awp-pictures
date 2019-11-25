@@ -1,5 +1,6 @@
 import React from 'react';
 import { Segment, Form, Header, TextArea, Button } from 'semantic-ui-react';
+import { withRouter } from 'react-router-dom';
 import { apiCall } from '../Util';
 
 /*
@@ -9,7 +10,7 @@ import { apiCall } from '../Util';
  * Post picture page
  */
 
-export default class PostPicturePage extends React.Component {
+class PostPicturePage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -70,6 +71,9 @@ export default class PostPicturePage extends React.Component {
     }
   }
 
+  /**
+   * Function to validate caption textarea
+   */
   validateCaption() {
     // Clear caption error
     this.setState({caption_error: ''});
@@ -133,7 +137,12 @@ export default class PostPicturePage extends React.Component {
         if (response.data.error) {
           this.setState({post_picture_error: response.data.error});
         } else {
-          // go to picture page
+
+          // Refresh pictures on browse page
+          this.props.refreshBrowsePictures();
+
+          // Go to picture page
+          this.props.history.push('/picture/' + response.data.picture_id);
         }
       } catch (e) {
         // Set post picture button loading false and error message
@@ -209,3 +218,5 @@ export default class PostPicturePage extends React.Component {
     );
   }
 }
+
+export default withRouter(PostPicturePage)

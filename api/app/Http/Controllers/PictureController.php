@@ -114,7 +114,7 @@ class PictureController extends Controller
         // Query database for pictures
         $data = app('db')->table('pictures')
             ->join('users', 'users.id', 'pictures.user_id')
-            ->select('pictures.id', 'pretty_id as picture_id', 'file_name', 'file_type', 'title', 'caption', 'username', 'pictures.created_at')
+            ->select('pictures.id', 'pretty_id as picture_id', 'file_name', 'file_type', 'title', 'caption', 'username', 'users.id as user_id', 'pictures.created_at')
             ->orderBy('created_at', $order);
 
         // If pretty_id isn't null, add where clause
@@ -138,7 +138,7 @@ class PictureController extends Controller
             // Get the comments for this picture
             $comments = app('db')->table('comments')
                 ->join('users', 'comments.user_id', 'users.id')
-                ->select('comments.id as comment_id', 'comment', 'username', 'comments.created_at')
+                ->select('comments.id as comment_id', 'comment', 'username', 'comments.user_id', 'comments.created_at')
                 ->where('picture_id', $item->id)
                 ->orderBy('created_at', 'asc')
                 ->get();
@@ -147,7 +147,11 @@ class PictureController extends Controller
             // Do some stuff for each comment
             foreach ($item->comments as &$comment) {
                 $comment->comment_id = (string) $comment->comment_id;
+                $comment->user_id = (string) $comment->user_id;
             }
+
+            // Make user_id a string
+            $item->user_id = (string) $item->user_id;
 
             // Unset some stuff we don't want to return
             unset($item->file_name);
@@ -165,7 +169,7 @@ class PictureController extends Controller
                 ]
             ]);
         } else {
-            return response()->json(['picture' => $data['data']]);
+            return response()->json(['picture' => $data['data'][0]]);
         }
     }
 
