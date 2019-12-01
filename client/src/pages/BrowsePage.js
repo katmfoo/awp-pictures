@@ -191,7 +191,7 @@ export default class BrowsePage extends React.Component {
                       <Item.Content verticalAlign='middle'>
                         <Link to={'/picture/' + picture.picture_id}><Item.Header style={{marginTop: '3px', fontSize: '1.2rem', fontWeight: 'bold'}}>{picture.title}</Item.Header></Link>
                         <Item.Meta>posted by {picture.username}</Item.Meta>
-                        <Item.Extra style={{marginTop: '-1px'}}><Icon fitted name='comment' /> {picture.comments.length} comments <Icon fitted name='time' style={{paddingLeft: '10px'}}/> {moment(picture.created_at).fromNow()}</Item.Extra>
+                        <Item.Extra style={{marginTop: '-1px'}}><Icon fitted name='comment' /> {picture.comments.length} comments <Icon fitted name='time' style={{paddingLeft: '10px'}}/> {moment.utc(picture.created_at).local().fromNow()}</Item.Extra>
                       </Item.Content>
                     </Item>
                   )

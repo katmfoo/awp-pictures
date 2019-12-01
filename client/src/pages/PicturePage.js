@@ -138,7 +138,7 @@ export default class PicturePage extends React.Component {
         <div style={{color: 'rgba(0,0,0,.4)', marginTop: '5px'}}>
           posted by {this.state.picture.username}
           <span style={{float: 'right'}}>
-            <Icon fitted name='comment' /> { this.state.picture.comments ? this.state.picture.comments.length : 0 } comments <Icon fitted name='time' style={{paddingLeft: '10px'}}/> {moment(this.state.picture.created_at).fromNow()}
+            <Icon fitted name='comment' /> { this.state.picture.comments ? this.state.picture.comments.length : 0 } comments <Icon fitted name='time' style={{paddingLeft: '10px'}}/> {moment.utc(this.state.picture.created_at).local().fromNow()}
           </span>
         </div>
 
@@ -149,7 +149,7 @@ export default class PicturePage extends React.Component {
             return (
               <Comment key={comment.comment_id}>
                 <Comment.Content>
-                  <Comment.Author>{comment.username ? comment.username : '[deleted]'}&nbsp;&nbsp;<span style={{fontSize: '12.25px', color: 'rgba(0,0,0,.4)', fontWeight: 'normal'}}>{moment(comment.created_at).fromNow()}</span></Comment.Author>
+                  <Comment.Author>{comment.username ? comment.username : '[deleted]'}&nbsp;&nbsp;<span style={{fontSize: '12.25px', color: 'rgba(0,0,0,.4)', fontWeight: 'normal'}}>{moment.utc(comment.created_at).local().fromNow()}</span></Comment.Author>
                   <Comment.Text>{comment.comment ? comment.comment : '[deleted]'}</Comment.Text>
                   {comment.comment != null && getLoggedInUserId() && (comment.user_id === getLoggedInUserId() || this.state.picture.user_id === getLoggedInUserId()) &&
                     <Comment.Actions>
