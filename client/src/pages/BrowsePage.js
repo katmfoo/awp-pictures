@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Menu, Dropdown, Item, Icon, Button } from 'semantic-ui-react';
+import { Grid, Menu, Dropdown, Item, Icon, Button, Loader } from 'semantic-ui-react';
 import { Link, Switch, Route } from 'react-router-dom';
 import queryString from 'query-string'
 import moment from 'moment';
@@ -179,8 +179,13 @@ export default class BrowsePage extends React.Component {
                   {key: 2, text: 'oldest', value: 'asc'}
                 ]} value={this.state.order} onChange={this.handleOrderChange} />
               </div>
-              {this.state.pictures.length === 0 &&
+              {this.state.pictures.length === 0 && !this.state.pictures_loading &&
                 <div style={{marginTop: '45px'}}>No pictures</div>
+              }
+              {this.state.pictures_loading &&
+                <div style={{marginTop: '200px'}}>
+                  <Loader active={this.state.pictures_loading}>Loading</Loader>
+                </div>
               }
               <Item.Group divided>
                 {this.state.pictures.map((picture) => {
