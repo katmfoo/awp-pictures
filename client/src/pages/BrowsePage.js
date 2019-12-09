@@ -187,21 +187,23 @@ export default class BrowsePage extends React.Component {
                   <Loader active={this.state.pictures_loading}>Loading</Loader>
                 </div>
               }
-              <Item.Group divided>
-                {this.state.pictures.map((picture) => {
-                  return (
-                    <Item key={picture.picture_id}>
-                      <Item.Image size='tiny' src={picture.url} />
-                
-                      <Item.Content verticalAlign='middle'>
-                        <Link to={'/picture/' + picture.picture_id}><Item.Header style={{marginTop: '3px', fontSize: '1.2rem', fontWeight: 'bold'}}>{picture.title}</Item.Header></Link>
-                        <Item.Meta>posted by {picture.username}</Item.Meta>
-                        <Item.Extra style={{marginTop: '-1px'}}><Icon fitted name='comment' /> {picture.comments.length} comments <Icon fitted name='time' style={{paddingLeft: '10px'}}/> {moment.utc(picture.created_at).local().fromNow()}</Item.Extra>
-                      </Item.Content>
-                    </Item>
-                  )
-                })}
-              </Item.Group>
+              {!this.state.pictures_loading &&
+                <Item.Group divided>
+                  {this.state.pictures.map((picture) => {
+                    return (
+                      <Item key={picture.picture_id}>
+                        <Item.Image size='tiny' src={picture.url} />
+                  
+                        <Item.Content verticalAlign='middle'>
+                          <Link to={'/picture/' + picture.picture_id}><Item.Header style={{marginTop: '3px', fontSize: '1.2rem', fontWeight: 'bold'}}>{picture.title}</Item.Header></Link>
+                          <Item.Meta>posted by {picture.username}</Item.Meta>
+                          <Item.Extra style={{marginTop: '-1px'}}><Icon fitted name='comment' /> {picture.comments.length} comments <Icon fitted name='time' style={{paddingLeft: '10px'}}/> {moment.utc(picture.created_at).local().fromNow()}</Item.Extra>
+                        </Item.Content>
+                      </Item>
+                    )
+                  })}
+                </Item.Group>
+              }
               <div style={{textAlign: 'center', margin: '50px 0 20px 0'}}>
                 <Button.Group basic>
                   <Button icon='angle left' disabled={this.state.page === 1} onClick={this.prevPage} />
